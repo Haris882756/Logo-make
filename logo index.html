@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logo Maker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f3f3f3;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      margin: auto;
+      width: 90%;
+      max-width: 700px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    canvas {
+      border: 1px solid #ddd;
+      margin: 20px 0;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    input, select, button {
+      margin: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: calc(100% - 24px);
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Logo Maker</h1>
+    <input type="file" id="backgroundUpload" accept="image/*" placeholder="Upload Background">
+    <input type="text" id="textInput" placeholder="Enter Logo Text">
+    <select id="fontSelect">
+      <option value="Arial">Arial</option>
+      <option value="Verdana">Verdana</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Courier New">Courier New</option>
+    </select>
+    <input type="color" id="colorPicker" value="#ff0000">
+    <button id="addTextBtn">Add Text</button>
+    <canvas id="logoCanvas" width="500" height="300"></canvas>
+    <button id="downloadLogoBtn">Download Logo</button>
+  </div>
+
+  <script>
+    const backgroundUpload = document.getElementById('backgroundUpload');
+    const textInput = document.getElementById('textInput');
+    const fontSelect = document.getElementById('fontSelect');
+    const colorPicker = document.getElementById('colorPicker');
+    const addTextBtn = document.getElementById('addTextBtn');
+    const downloadLogoBtn = document.getElementById('downloadLogoBtn');
+    const canvas = document.getElementById('logoCanvas');
+    const ctx = canvas.getContext('2d');
+    let background = null;
+
+    // Load background image
+    backgroundUpload.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        background = new Image();
+        background.src = e.target.result;
+        background.onload = () => {
+          ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+        };
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    // Add text to canvas
+    addTextBtn.addEventListener('click', () => {
+      const text = textInput.value;
+      const font = fontSelect.value;
+      const color = colorPicker.value;
+
+      ctx.font = `40px ${font}`;
+      ctx.fillStyle = color;
+      ctx.fillText(text, 50, 150);
+    });
+
+    // Download logo
+    downloadLogoBtn.addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = 'logo.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  </script>
+</body>
+</html>
